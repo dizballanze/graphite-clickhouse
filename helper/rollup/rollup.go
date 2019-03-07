@@ -81,6 +81,11 @@ func (rr *Pattern) compile(hasRegexp bool) error {
 		"anyLast": AggrAnyLast,
 	}
 
+	// Add percentiles
+	for i := 1.0; i < 100; i++ {
+		aggrMap[fmt.Sprintf("quantileExact(%.2f)", i / 100)] = AggrPercentile(i)
+	}
+
 	var exists bool
 	rr.aggr, exists = aggrMap[rr.Function]
 
@@ -200,8 +205,6 @@ func doMetricPrecision(points []point.Point, precision uint32, aggr func([]point
 // RollupMetric rolling up list of points of ONE metric sorted by key "time"
 // returns (new points slice, precision)
 func (r *Rollup) RollupMetric(metricName string, fromTimestamp uint32, points []point.Point) ([]point.Point, uint32) {
-	// pp.Println(points)
-
 	l := len(points)
 	if l == 0 {
 		return points, 1
@@ -220,6 +223,5 @@ func (r *Rollup) RollupMetric(metricName string, fromTimestamp uint32, points []
 		precision = retention.Precision
 	}
 
-	// pp.Println(points)
 	return points, precision
 }

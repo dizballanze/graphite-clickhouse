@@ -2,6 +2,7 @@ package rollup
 
 import (
 	"github.com/lomik/graphite-clickhouse/helper/point"
+	"github.com/montanaflynn/stats"
 )
 
 func AggrSum(points []point.Point) (r float64) {
@@ -55,4 +56,17 @@ func AggrAnyLast(points []point.Point) (r float64) {
 		r = points[len(points)-1].Value
 	}
 	return
+}
+
+func AggrPercentile(percent float64) (func ([]point.Point) (float64)) {
+	return func (points []point.Point) (r float64) {
+		d := make([]float64, len(points))
+		if len(points) > 0 {
+			for i, p := range points {
+				d[i] = p.Value
+			}
+			r, _ = stats.Percentile(d, percent)
+		}
+		return
+	}
 }
