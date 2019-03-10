@@ -243,7 +243,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	d = time.Since(sortStart)
 	logger.Debug("sort", zap.String("runtime", d.String()), zap.Duration("runtime_ns", d))
 
-	data.Points.Uniq()
+	if !h.config.Common.KeepDuplicates {
+		data.Points.Uniq()
+	}
 	data.Aliases = aliases
 
 	// pp.Println(points)

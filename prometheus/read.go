@@ -151,7 +151,9 @@ func (h *Handler) queryData(ctx context.Context, q *prompb.Query, metricList [][
 	}
 
 	data.Points.Sort()
-	data.Points.Uniq()
+	if !h.config.Common.KeepDuplicates {
+		data.Points.Uniq()
+	}
 
 	return h.makeQueryResult(ctx, data, rollupObj, uint32(fromTimestamp), uint32(untilTimestamp))
 }

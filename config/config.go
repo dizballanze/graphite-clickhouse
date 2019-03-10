@@ -46,6 +46,7 @@ type Common struct {
 	MaxCPU          int              `toml:"max-cpu"`
 	TargetBlacklist []string         `toml:"target-blacklist"`
 	Blacklist       []*regexp.Regexp `toml:"-"` // compiled TargetBlacklist
+	KeepDuplicates  bool             `toml:"keep-duplicates"`
 }
 
 type ClickHouse struct {
@@ -118,6 +119,7 @@ func New() *Config {
 			// 	Duration: time.Minute,
 			// },
 			// MetricEndpoint: MetricEndpointLocal,
+			KeepDuplicates: false,
 			MaxCPU: 1,
 		},
 		ClickHouse: ClickHouse{
